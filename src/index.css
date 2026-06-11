@@ -1,0 +1,151 @@
+@import "tailwindcss";
+
+/* Light theme (default) */
+:root {
+  --color-surface: #f8fafc;
+  --color-surface-raised: #ffffff;
+  --color-surface-overlay: #e2e8f0;
+  --color-accent: #16a34a;
+  --color-accent-dim: #15803d;
+  --color-accent-foreground: #ffffff;
+  --color-warning: #d97706;
+  --color-text: #0f172a;
+  --color-text-muted: #64748b;
+  --color-ring-bg: #cbd5e1;
+  --color-border: #e2e8f0;
+  --color-success-bg: #dcfce7;
+  --color-success-border: #86efac;
+  --color-warning-bg: #fef3c7;
+  --color-warning-border: #fcd34d;
+  --color-chart-grid: #cbd5e1;
+  --color-chart-tooltip-bg: #ffffff;
+  --color-chart-tooltip-border: #e2e8f0;
+  --color-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.08);
+  --color-nav-bg: rgb(255 255 255 / 0.85);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --color-surface: #0f172a;
+    --color-surface-raised: #1e293b;
+    --color-surface-overlay: #334155;
+    --color-accent: #22c55e;
+    --color-accent-dim: #16a34a;
+    --color-accent-foreground: #0f172a;
+    --color-warning: #f59e0b;
+    --color-text: #f1f5f9;
+    --color-text-muted: #94a3b8;
+    --color-ring-bg: #334155;
+    --color-border: #334155;
+    --color-success-bg: rgb(34 197 94 / 0.1);
+    --color-success-border: rgb(34 197 94 / 0.3);
+    --color-warning-bg: rgb(245 158 11 / 0.1);
+    --color-warning-border: rgb(245 158 11 / 0.3);
+    --color-chart-grid: #475569;
+    --color-chart-tooltip-bg: #1e293b;
+    --color-chart-tooltip-border: #334155;
+    --color-shadow: none;
+    --color-nav-bg: rgb(30 41 59 / 0.9);
+  }
+}
+
+[data-theme="dark"] {
+  --color-surface: #0f172a;
+  --color-surface-raised: #1e293b;
+  --color-surface-overlay: #334155;
+  --color-accent: #22c55e;
+  --color-accent-dim: #16a34a;
+  --color-accent-foreground: #0f172a;
+  --color-warning: #f59e0b;
+  --color-text: #f1f5f9;
+  --color-text-muted: #94a3b8;
+  --color-ring-bg: #334155;
+  --color-border: #334155;
+  --color-success-bg: rgb(34 197 94 / 0.1);
+  --color-success-border: rgb(34 197 94 / 0.3);
+  --color-warning-bg: rgb(245 158 11 / 0.1);
+  --color-warning-border: rgb(245 158 11 / 0.3);
+  --color-chart-grid: #475569;
+  --color-chart-tooltip-bg: #1e293b;
+  --color-chart-tooltip-border: #334155;
+  --color-shadow: none;
+  --color-nav-bg: rgb(30 41 59 / 0.9);
+}
+
+[data-theme="light"] {
+  --color-surface: #f8fafc;
+  --color-surface-raised: #ffffff;
+  --color-surface-overlay: #e2e8f0;
+  --color-accent: #16a34a;
+  --color-accent-dim: #15803d;
+  --color-accent-foreground: #ffffff;
+  --color-warning: #d97706;
+  --color-text: #0f172a;
+  --color-text-muted: #64748b;
+  --color-ring-bg: #cbd5e1;
+  --color-border: #e2e8f0;
+  --color-success-bg: #dcfce7;
+  --color-success-border: #86efac;
+  --color-warning-bg: #fef3c7;
+  --color-warning-border: #fcd34d;
+  --color-chart-grid: #cbd5e1;
+  --color-chart-tooltip-bg: #ffffff;
+  --color-chart-tooltip-border: #e2e8f0;
+  --color-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.08);
+  --color-nav-bg: rgb(255 255 255 / 0.85);
+}
+
+@theme {
+  --color-surface: var(--color-surface);
+  --color-surface-raised: var(--color-surface-raised);
+  --color-surface-overlay: var(--color-surface-overlay);
+  --color-accent: var(--color-accent);
+  --color-accent-dim: var(--color-accent-dim);
+  --color-accent-foreground: var(--color-accent-foreground);
+  --color-warning: var(--color-warning);
+  --color-text: var(--color-text);
+  --color-text-muted: var(--color-text-muted);
+  --color-border: var(--color-border);
+}
+
+html {
+  background-color: var(--color-surface);
+  color: var(--color-text);
+}
+
+body {
+  margin: 0;
+  min-height: 100dvh;
+  font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+#root {
+  min-height: 100dvh;
+}
+
+.safe-bottom {
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+}
+
+.card-shadow {
+  box-shadow: var(--color-shadow);
+}
+
+.phase-sanfterStart {
+  border-left: 3px solid #22c55e;
+}
+.phase-aufbau {
+  border-left: 3px solid #3b82f6;
+}
+.phase-deftig {
+  border-left: 3px solid #f59e0b;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.animate-spin-slow {
+  animation: spin 0.8s linear infinite;
+}
