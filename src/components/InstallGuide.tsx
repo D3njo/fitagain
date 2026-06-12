@@ -35,7 +35,7 @@ export function InstallGuide() {
             <ol className="list-decimal list-inside space-y-1">
               <li>Repo auf GitHub pushen — bei jedem Push auf <code className="text-xs bg-surface-overlay px-1 rounded">main</code> wird automatisch deployed</li>
               <li>Unter Settings → Pages → Source: <strong>GitHub Actions</strong> wählen</li>
-              <li>Feste URL auf dem Handy öffnen: <code className="text-xs bg-surface-overlay px-1 rounded">https://&lt;username&gt;.github.io/fitagain/</code></li>
+              <li>Feste URL auf dem Handy öffnen: <code className="text-xs bg-surface-overlay px-1 rounded">https://d3njo.github.io/phasefuel/</code></li>
             </ol>
           </section>
 

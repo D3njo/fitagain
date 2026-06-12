@@ -3,7 +3,7 @@ import react from '@vitejs/plugin-react'
 import tailwindcss from '@tailwindcss/vite'
 import { VitePWA } from 'vite-plugin-pwa'
 
-const repoName = process.env.GITHUB_REPOSITORY?.split('/')[1] ?? 'fitagain'
+const repoName = process.env.GITHUB_REPOSITORY?.split('/')[1] ?? 'phasefuel'
 const base = process.env.GITHUB_PAGES === 'true' ? `/${repoName}/` : '/'
 
 export default defineConfig({
