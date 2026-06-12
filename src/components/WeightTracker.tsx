@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { useLiveQuery } from 'dexie-react-hooks'
-import { LineChart, Line, XAxis, YAxis, ResponsiveContainer, Tooltip } from 'recharts'
+import { WeightLineChart } from './charts/WeightLineChart'
 import { addWeightEntry, getWeightEntries } from '../db/database'
 import type { ChartColors } from '../hooks/useTheme'
 import { Button } from './ui/Button'
@@ -36,14 +36,6 @@ export function WeightTracker({ targetWeight, chartColors }: WeightTrackerProps)
 
   const latest = entries?.[entries.length - 1]
 
-  const tooltipStyle = {
-    background: chartColors.tooltipBg,
-    border: `1px solid ${chartColors.tooltipBorder}`,
-    borderRadius: '12px',
-    fontSize: '12px',
-    color: chartColors.text,
-  }
-
   return (
     <Card>
       <h3 className="font-semibold mb-3">Gewicht</h3>
@@ -58,26 +50,7 @@ export function WeightTracker({ targetWeight, chartColors }: WeightTrackerProps)
       )}
 
       {chartData.length > 1 && (
-        <div className="h-32 mt-3">
-          <ResponsiveContainer width="100%" height="100%">
-            <LineChart data={chartData}>
-              <XAxis dataKey="date" tick={{ fontSize: 10, fill: chartColors.text }} />
-              <YAxis
-                domain={['dataMin - 1', 'dataMax + 1']}
-                tick={{ fontSize: 10, fill: chartColors.text }}
-                width={35}
-              />
-              <Tooltip contentStyle={tooltipStyle} />
-              <Line
-                type="monotone"
-                dataKey="weight"
-                stroke={chartColors.accent}
-                strokeWidth={2}
-                dot={{ fill: chartColors.accent, r: 3 }}
-              />
-            </LineChart>
-          </ResponsiveContainer>
-        </div>
+        <WeightLineChart data={chartData} chartColors={chartColors} />
       )}
 
       <form onSubmit={handleSubmit} className="flex gap-2 mt-4">

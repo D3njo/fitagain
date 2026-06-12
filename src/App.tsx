@@ -47,7 +47,7 @@ function App() {
   }
 
   return (
-    <div className="min-h-dvh pb-20 bg-surface">
+    <div className="min-h-dvh pb-nav bg-surface">
       <main className="max-w-lg mx-auto px-4 pt-6 pb-4">
         {page === 'today' && <TodayPage onGoShopping={() => setPage('shopping')} />}
         {page === 'plan' && <PlanPage onGoShopping={() => setPage('shopping')} />}

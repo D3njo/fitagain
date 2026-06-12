@@ -174,6 +174,7 @@ export function useMealActions() {
       protein: number
       fat: number
       carbs: number
+      macrosEstimated?: boolean
       date?: string
     }) => {
       await logMeal({
@@ -185,6 +186,7 @@ export function useMealActions() {
         fat: data.fat,
         carbs: data.carbs,
         category: 'snack',
+        macrosEstimated: data.macrosEstimated,
       })
 
       if (!matchesCatalogDish(data.name)) {

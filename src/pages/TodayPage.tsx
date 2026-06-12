@@ -133,22 +133,25 @@ export function TodayPage({ onGoShopping }: TodayPageProps) {
             {summary.logs.map((logEntry) => (
               <div
                 key={logEntry.id}
-                className="flex items-center justify-between py-2.5 px-3 rounded-xl bg-surface-raised border border-border/50 text-sm card-shadow"
+                className="flex items-start justify-between gap-2 py-2.5 px-3 rounded-xl bg-surface-raised border border-border/50 text-sm card-shadow"
               >
-                <span className="font-medium">{logEntry.mealName}</span>
-                <div className="flex items-center gap-3">
-                  <span className="text-text-muted text-xs">
+                <div className="min-w-0 flex-1">
+                  <span className="font-medium block truncate">{logEntry.mealName}</span>
+                  <span className="text-text-muted text-xs mt-0.5 block">
                     {logEntry.calories} kcal · {logEntry.protein}P · {logEntry.carbs}KH ·{' '}
                     {logEntry.fat}F
+                    {logEntry.macrosEstimated && (
+                      <span className="ml-1 text-accent/80">· geschätzt</span>
+                    )}
                   </span>
-                  <button
-                    onClick={() => logEntry.id && remove(logEntry.id)}
-                    className="w-8 h-8 rounded-lg flex items-center justify-center text-text-muted hover:text-red-500 hover:bg-red-500/10 transition-colors"
-                    aria-label="Eintrag löschen"
-                  >
-                    ✕
-                  </button>
                 </div>
+                <button
+                  onClick={() => logEntry.id && remove(logEntry.id)}
+                  className="w-8 h-8 shrink-0 rounded-lg flex items-center justify-center text-text-muted hover:text-red-500 hover:bg-red-500/10 transition-colors"
+                  aria-label="Eintrag löschen"
+                >
+                  ✕
+                </button>
               </div>
             ))}
           </div>
@@ -171,6 +174,7 @@ export function TodayPage({ onGoShopping }: TodayPageProps) {
           <ManualMealForm
             nutritionApiKey={settings?.nutritionApiKey}
             excludedAllergens={settings?.excludedAllergens}
+            planGoal={settings?.planGoal}
             onSubmit={async (data) => {
               await logManual(data)
             }}

@@ -27,7 +27,7 @@ export function PwaHint({ settings }: PwaHintProps) {
   }
 
   return (
-    <div className="fixed bottom-20 left-4 right-4 max-w-lg mx-auto z-50">
+    <div className="fixed bottom-nav-offset left-4 right-4 max-w-lg mx-auto z-50">
       <Card className="!p-4 !border-accent/30 card-shadow">
         <p className="text-sm font-semibold">App installieren</p>
         <p className="text-xs text-text-muted mt-1">

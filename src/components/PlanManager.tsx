@@ -120,7 +120,7 @@ export function PlanManager({ settings }: PlanManagerProps) {
                 Heute mit Tag 1 starten
               </Button>
               <div className="flex gap-2 items-end">
-                <div className="flex-1">
+                <div className="flex-1 min-w-0">
                   <Input
                     label="Start auf Datum verschieben"
                     type="date"
@@ -130,6 +130,7 @@ export function PlanManager({ settings }: PlanManagerProps) {
                 </div>
                 <Button
                   variant="secondary"
+                  className="shrink-0"
                   onClick={() => setPending({ type: 'schedule', date: scheduleDate })}
                   disabled={!scheduleDate}
                 >

@@ -21,9 +21,9 @@ export function ExclusionSettings({ excludedAllergens, onChange }: ExclusionSett
       <p className="text-xs text-text-muted mb-3">
         Betroffene Gerichte werden im Plan und bei manueller Eingabe ausgeblendet.
       </p>
-      <div className="grid grid-cols-2 gap-2">
+      <div className="grid grid-cols-1 min-[400px]:grid-cols-2 gap-2">
         {ALLERGENS.map((a) => (
-          <label key={a} className="flex items-center gap-2 text-sm cursor-pointer">
+          <label key={a} className="flex items-center gap-2 text-sm cursor-pointer min-w-0">
             <input
               type="checkbox"
               checked={excludedAllergens.includes(a)}

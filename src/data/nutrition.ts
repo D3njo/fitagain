@@ -153,6 +153,30 @@ export function getDailyTarget(
   return { day: clampedDay, phase, calories, protein, carbs, fat }
 }
 
+function carbRatioForGoal(goal: PlanGoal, phase?: Phase): number {
+  if (goal === 'lose') return 0.35
+  if (phase === 'sanfterStart') return 0.55
+  return 0.45
+}
+
+export function inferMacrosFromCaloriesAndProtein(
+  calories: number,
+  protein: number,
+  goal: PlanGoal = 'muscle',
+  phase?: Phase,
+): { carbs: number; fat: number } {
+  const proteinKcal = protein * 4
+  if (proteinKcal > calories) {
+    return { carbs: 0, fat: 0 }
+  }
+  const remaining = Math.max(0, calories - proteinKcal)
+  const carbRatio = carbRatioForGoal(goal, phase)
+  return {
+    carbs: Math.round((remaining * carbRatio) / 4),
+    fat: Math.round((remaining * (1 - carbRatio)) / 9),
+  }
+}
+
 export function getDayNumber(
   startDate: string,
   date: Date = new Date(),

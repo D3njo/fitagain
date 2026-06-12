@@ -1,13 +1,5 @@
-import {
-  BarChart,
-  Bar,
-  XAxis,
-  YAxis,
-  ResponsiveContainer,
-  Tooltip,
-  ReferenceLine,
-} from 'recharts'
 import { WeightTracker } from '../components/WeightTracker'
+import { MacroBarChart } from '../components/charts/MacroBarChart'
 import { Card } from '../components/ui/Card'
 import { EmptyState } from '../components/ui/EmptyState'
 import { PageHeader } from '../components/ui/PageHeader'
@@ -51,13 +43,6 @@ export function HistoryPage({ chartColors }: HistoryPageProps) {
   }))
 
   const completedDays = summaries.filter((s) => s.goalReached).length
-  const tooltipStyle = {
-    background: chartColors.tooltipBg,
-    border: `1px solid ${chartColors.tooltipBorder}`,
-    borderRadius: '12px',
-    fontSize: '12px',
-    color: chartColors.text,
-  }
 
   return (
     <div className="space-y-6">
@@ -80,20 +65,16 @@ export function HistoryPage({ chartColors }: HistoryPageProps) {
             <h2 className="text-sm font-semibold text-text-muted uppercase tracking-wide mb-3">
               Kalorien pro Tag
             </h2>
-            <Card className="!p-2 h-48">
-              <ResponsiveContainer width="100%" height="100%">
-                <BarChart data={chartData}>
-                  <XAxis dataKey="date" tick={{ fontSize: 10, fill: chartColors.text }} />
-                  <YAxis tick={{ fontSize: 10, fill: chartColors.text }} width={40} />
-                  <Tooltip contentStyle={tooltipStyle} />
-                  <Bar dataKey="kalorien" fill={chartColors.accent} radius={[4, 4, 0, 0]} />
-                  <ReferenceLine
-                    y={chartData[0]?.ziel}
-                    stroke={chartColors.warning}
-                    strokeDasharray="4 4"
-                  />
-                </BarChart>
-              </ResponsiveContainer>
+            <Card className="!p-2">
+              <MacroBarChart
+                data={chartData}
+                dataKey="kalorien"
+                fill={chartColors.accent}
+                chartColors={chartColors}
+                heightClass="h-48"
+                yAxisWidth={40}
+                referenceY={chartData[0]?.ziel}
+              />
             </Card>
           </section>
 
@@ -101,20 +82,15 @@ export function HistoryPage({ chartColors }: HistoryPageProps) {
             <h2 className="text-sm font-semibold text-text-muted uppercase tracking-wide mb-3">
               Protein pro Tag
             </h2>
-            <Card className="!p-2 h-40">
-              <ResponsiveContainer width="100%" height="100%">
-                <BarChart data={proteinData}>
-                  <XAxis dataKey="date" tick={{ fontSize: 10, fill: chartColors.text }} />
-                  <YAxis tick={{ fontSize: 10, fill: chartColors.text }} width={35} />
-                  <Tooltip contentStyle={tooltipStyle} />
-                  <Bar dataKey="protein" fill="#3b82f6" radius={[4, 4, 0, 0]} />
-                  <ReferenceLine
-                    y={proteinData[0]?.ziel}
-                    stroke={chartColors.warning}
-                    strokeDasharray="4 4"
-                  />
-                </BarChart>
-              </ResponsiveContainer>
+            <Card className="!p-2">
+              <MacroBarChart
+                data={proteinData}
+                dataKey="protein"
+                fill="#3b82f6"
+                chartColors={chartColors}
+                heightClass="h-40"
+                referenceY={proteinData[0]?.ziel}
+              />
             </Card>
           </section>
 
@@ -122,15 +98,14 @@ export function HistoryPage({ chartColors }: HistoryPageProps) {
             <h2 className="text-sm font-semibold text-text-muted uppercase tracking-wide mb-3">
               Kohlenhydrate pro Tag
             </h2>
-            <Card className="!p-2 h-36">
-              <ResponsiveContainer width="100%" height="100%">
-                <BarChart data={carbsData}>
-                  <XAxis dataKey="date" tick={{ fontSize: 10, fill: chartColors.text }} />
-                  <YAxis tick={{ fontSize: 10, fill: chartColors.text }} width={35} />
-                  <Tooltip contentStyle={tooltipStyle} />
-                  <Bar dataKey="kohlenhydrate" fill="#22c55e" radius={[4, 4, 0, 0]} />
-                </BarChart>
-              </ResponsiveContainer>
+            <Card className="!p-2">
+              <MacroBarChart
+                data={carbsData}
+                dataKey="kohlenhydrate"
+                fill="#22c55e"
+                chartColors={chartColors}
+                heightClass="h-36"
+              />
             </Card>
           </section>
 
@@ -138,15 +113,14 @@ export function HistoryPage({ chartColors }: HistoryPageProps) {
             <h2 className="text-sm font-semibold text-text-muted uppercase tracking-wide mb-3">
               Fett pro Tag
             </h2>
-            <Card className="!p-2 h-36">
-              <ResponsiveContainer width="100%" height="100%">
-                <BarChart data={fatData}>
-                  <XAxis dataKey="date" tick={{ fontSize: 10, fill: chartColors.text }} />
-                  <YAxis tick={{ fontSize: 10, fill: chartColors.text }} width={35} />
-                  <Tooltip contentStyle={tooltipStyle} />
-                  <Bar dataKey="fett" fill="#f59e0b" radius={[4, 4, 0, 0]} />
-                </BarChart>
-              </ResponsiveContainer>
+            <Card className="!p-2">
+              <MacroBarChart
+                data={fatData}
+                dataKey="fett"
+                fill="#f59e0b"
+                chartColors={chartColors}
+                heightClass="h-36"
+              />
             </Card>
           </section>
         </>

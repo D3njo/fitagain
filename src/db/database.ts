@@ -17,6 +17,7 @@ export interface MealLog {
   carbs: number
   category: string
   timestamp: number
+  macrosEstimated?: boolean
 }
 
 export interface WeightEntry {
@@ -144,6 +145,15 @@ db.version(5)
   })
 
 db.version(6).stores({
+  mealLogs: '++id, date, mealId, timestamp',
+  weightEntries: '++id, date, timestamp',
+  settings: 'id',
+  shoppingChecks: '++id, week, ingredientId, [week+ingredientId]',
+  dayPreferences: '++id, &date',
+  savedDishes: '++id, &nameKey, lastUsed',
+})
+
+db.version(7).stores({
   mealLogs: '++id, date, mealId, timestamp',
   weightEntries: '++id, date, timestamp',
   settings: 'id',

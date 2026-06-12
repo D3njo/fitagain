@@ -1,12 +1,15 @@
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import { QUICK_PICK_DISHES } from '../data/commonDishes'
 import type { Allergen } from '../data/allergens'
+import type { PlanGoal } from '../data/planConfig'
+import { inferMacrosFromCaloriesAndProtein } from '../data/nutrition'
 import { useFoodLookup } from '../hooks/useFoodLookup'
 import {
   groupSuggestionsByKind,
   scaleFoodResult,
   searchAllDishes,
   type FoodLookupResult,
+  type FoodLookupSource,
   type PortionSize,
 } from '../services/foodLookup'
 import { Button } from './ui/Button'
@@ -16,12 +19,14 @@ import { SegmentedControl } from './ui/SegmentedControl'
 interface ManualMealFormProps {
   nutritionApiKey?: string
   excludedAllergens?: Allergen[]
+  planGoal?: PlanGoal
   onSubmit: (data: {
     name: string
     calories: number
     protein: number
     fat: number
     carbs: number
+    macrosEstimated?: boolean
   }) => Promise<void>
   onClose: () => void
 }
@@ -30,9 +35,14 @@ function formatMacros(item: FoodLookupResult): string {
   return `${item.calories} kcal · ${item.protein} P · ${item.carbs} KH · ${item.fat} F`
 }
 
+function isLookupSource(source: string | null): source is FoodLookupSource {
+  return source === 'local' || source === 'online' || source === 'saved'
+}
+
 export function ManualMealForm({
   nutritionApiKey,
   excludedAllergens = [],
+  planGoal = 'muscle',
   onSubmit,
   onClose,
 }: ManualMealFormProps) {
@@ -45,6 +55,7 @@ export function ManualMealForm({
   const [showSuggestions, setShowSuggestions] = useState(false)
   const [portion, setPortion] = useState<PortionSize>('normal')
   const [showMacroDetails, setShowMacroDetails] = useState(false)
+  const [macrosManuallySet, setMacrosManuallySet] = useState(false)
   const blurTimer = useRef<number | null>(null)
 
   const { suggestions, loading, error, hasApiKey, savedDishes } = useFoodLookup({
@@ -56,6 +67,21 @@ export function ManualMealForm({
 
   const grouped = groupSuggestionsByKind(suggestions)
 
+  const caloriesNum = parseInt(kcal, 10)
+  const proteinNum = parseInt(protein, 10) || 0
+  const showEstimate =
+    !macrosManuallySet &&
+    !isLookupSource(selectedSource) &&
+    !isNaN(caloriesNum) &&
+    kcal.trim() !== ''
+
+  const estimatedMacros = useMemo(() => {
+    if (!showEstimate) return null
+    return inferMacrosFromCaloriesAndProtein(caloriesNum, proteinNum, planGoal)
+  }, [showEstimate, caloriesNum, proteinNum, planGoal])
+
+  const proteinExceedsCalories = showEstimate && proteinNum * 4 > caloriesNum
+
   const applySuggestion = (item: FoodLookupResult) => {
     const scaled = scaleFoodResult(item, portion)
     setName(scaled.name)
@@ -64,6 +90,7 @@ export function ManualMealForm({
     setFat(String(scaled.fat))
     setCarbs(String(scaled.carbs))
     setSelectedSource(scaled.source)
+    setMacrosManuallySet(false)
     setShowSuggestions(false)
   }
 
@@ -88,6 +115,7 @@ export function ManualMealForm({
   const handleNameChange = (value: string) => {
     setName(value)
     setSelectedSource(null)
+    setMacrosManuallySet(false)
     setShowSuggestions(true)
     if (!value.trim()) {
       setKcal('')
@@ -99,18 +127,29 @@ export function ManualMealForm({
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    const calories = parseInt(kcal, 10)
-    const proteinVal = parseInt(protein, 10) || 0
-    const fatVal = parseInt(fat, 10) || 0
-    const carbsVal = parseInt(carbs, 10) || 0
-    if (!name.trim() || isNaN(calories)) return
+    if (!name.trim() || isNaN(caloriesNum)) return
+
+    let fatVal = parseInt(fat, 10) || 0
+    let carbsVal = parseInt(carbs, 10) || 0
+    let macrosEstimated = false
+
+    if (isLookupSource(selectedSource) || macrosManuallySet) {
+      fatVal = parseInt(fat, 10) || 0
+      carbsVal = parseInt(carbs, 10) || 0
+    } else {
+      const inferred = inferMacrosFromCaloriesAndProtein(caloriesNum, proteinNum, planGoal)
+      fatVal = inferred.fat
+      carbsVal = inferred.carbs
+      macrosEstimated = true
+    }
 
     await onSubmit({
       name: name.trim(),
-      calories,
-      protein: proteinVal,
+      calories: caloriesNum,
+      protein: proteinNum,
       fat: fatVal,
       carbs: carbsVal,
+      macrosEstimated,
     })
     setName('')
     setKcal('')
@@ -118,6 +157,7 @@ export function ManualMealForm({
     setFat('0')
     setCarbs('0')
     setSelectedSource(null)
+    setMacrosManuallySet(false)
     onClose()
   }
 
@@ -226,7 +266,7 @@ export function ManualMealForm({
 
       {error && <p className="text-xs text-warning">{error}</p>}
 
-      <div className="flex gap-2">
+      <div className="grid grid-cols-1 min-[360px]:grid-cols-2 gap-2">
         <Input
           type="number"
           placeholder="kcal"
@@ -234,6 +274,7 @@ export function ManualMealForm({
           onChange={(e) => {
             setKcal(e.target.value)
             setSelectedSource(null)
+            setMacrosManuallySet(false)
           }}
         />
         <Input
@@ -243,9 +284,23 @@ export function ManualMealForm({
           onChange={(e) => {
             setProtein(e.target.value)
             setSelectedSource(null)
+            setMacrosManuallySet(false)
           }}
         />
       </div>
+
+      {showEstimate && estimatedMacros && (
+        <p className="text-xs text-text-muted -mt-1">
+          KH und Fett geschätzt: {estimatedMacros.carbs}g KH · {estimatedMacros.fat}g Fett
+          (Rest-Kalorien nach Atwater)
+        </p>
+      )}
+
+      {proteinExceedsCalories && (
+        <p className="text-xs text-warning -mt-1">
+          Protein-Kalorien übersteigen die Gesamt-kcal — KH/Fett werden als 0 gesetzt.
+        </p>
+      )}
 
       <button
         type="button"
@@ -256,7 +311,7 @@ export function ManualMealForm({
       </button>
 
       {showMacroDetails && (
-        <div className="flex gap-2">
+        <div className="grid grid-cols-1 min-[360px]:grid-cols-2 gap-2">
           <Input
             type="number"
             placeholder="KH (g)"
@@ -264,6 +319,7 @@ export function ManualMealForm({
             onChange={(e) => {
               setCarbs(e.target.value)
               setSelectedSource(null)
+              setMacrosManuallySet(true)
             }}
           />
           <Input
@@ -273,6 +329,7 @@ export function ManualMealForm({
             onChange={(e) => {
               setFat(e.target.value)
               setSelectedSource(null)
+              setMacrosManuallySet(true)
             }}
           />
         </div>

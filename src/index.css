@@ -128,6 +128,14 @@ body {
   padding-bottom: env(safe-area-inset-bottom, 0px);
 }
 
+.pb-nav {
+  padding-bottom: calc(5rem + env(safe-area-inset-bottom, 0px));
+}
+
+.bottom-nav-offset {
+  bottom: calc(5rem + env(safe-area-inset-bottom, 0px));
+}
+
 .card-shadow {
   box-shadow: var(--color-shadow);
 }

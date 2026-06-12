@@ -55,7 +55,7 @@ export function OnboardingPage() {
   }
 
   return (
-    <div className="min-h-dvh flex flex-col justify-center px-6 py-12 max-w-lg mx-auto bg-surface">
+    <div className="min-h-dvh flex flex-col overflow-y-auto px-4 sm:px-6 py-6 sm:py-10 max-w-lg mx-auto bg-surface">
       <div className="mb-8 text-center">
         <div className="w-16 h-16 rounded-2xl bg-accent/15 text-accent flex items-center justify-center text-2xl font-bold mx-auto mb-4">
           F
@@ -113,6 +113,7 @@ export function OnboardingPage() {
           <div>
             <p className="text-sm text-text-muted mb-2">Dein Ziel</p>
             <SegmentedControl
+              layout="grid"
               options={(
                 ['muscle', 'gain', 'lose', 'maintain'] as const
               ).map((g) => ({ value: g, label: PLAN_GOAL_LABELS[g] }))}
@@ -150,9 +151,9 @@ export function OnboardingPage() {
         <div className="space-y-4">
           <Card className="!p-4">
             <p className="text-sm font-medium mb-3">Allergene & Unverträglichkeiten</p>
-            <div className="grid grid-cols-2 gap-2">
+            <div className="grid grid-cols-1 min-[400px]:grid-cols-2 gap-2">
               {ALLERGENS.map((a) => (
-                <label key={a} className="flex items-center gap-2 text-sm cursor-pointer">
+                <label key={a} className="flex items-center gap-2 text-sm cursor-pointer min-w-0">
                   <input
                     type="checkbox"
                     checked={excludedAllergens.includes(a)}
