@@ -38,6 +38,7 @@ export function ProfilePage() {
       pwaHintDismissed: settings.pwaHintDismissed,
       themeMode: settings.themeMode ?? 'system',
       skipBreakfastDefault: settings.skipBreakfastDefault ?? false,
+      nutritionApiKey: String(form.get('nutritionApiKey') ?? '').trim() || undefined,
     })
     setSaved(true)
     setTimeout(() => setSaved(false), 2000)
@@ -77,6 +78,35 @@ export function ProfilePage() {
       <PageHeader title="Profil" subtitle="Deine Einstellungen" />
 
       <section>
+        <h3 className="text-sm font-medium mb-2">Manuelles Eintragen</h3>
+        <Card className="!p-4 space-y-3">
+          <p className="text-xs text-text-muted">
+            Für die automatische Kalorien-Erkennung bei Takeaway & Restaurant-Gerichten (optional).
+            Kostenloser Key bei{' '}
+            <a
+              href="https://calorieninjas.com/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-accent underline"
+            >
+              CalorieNinjas
+            </a>
+            .
+          </p>
+          <Input
+            name="nutritionApiKey"
+            label="CalorieNinjas API-Key"
+            type="password"
+            autoComplete="off"
+            placeholder="Optional — bleibt nur auf diesem Gerät"
+            defaultValue={settings.nutritionApiKey ?? ''}
+            form="profile-form"
+          />
+          <p className="text-xs text-text-muted">Mit „Speichern“ unten übernehmen.</p>
+        </Card>
+      </section>
+
+      <section>
         <h3 className="text-sm font-medium mb-2">Essgewohnheiten</h3>
         <Card className="!p-4">
           <label className="flex items-start gap-3 cursor-pointer">
@@ -114,7 +144,7 @@ export function ProfilePage() {
         />
       </section>
 
-      <form onSubmit={handleSave} className="space-y-4">
+      <form id="profile-form" onSubmit={handleSave} className="space-y-4">
         <Input
           name="startWeight"
           label="Startgewicht (kg)"

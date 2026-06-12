@@ -34,6 +34,7 @@ export interface Settings {
   pwaHintDismissed: boolean
   themeMode?: ThemeMode
   skipBreakfastDefault?: boolean
+  nutritionApiKey?: string
 }
 
 export interface DayPreference {

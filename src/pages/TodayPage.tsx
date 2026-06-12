@@ -1,14 +1,19 @@
 import { useState } from 'react'
 import { CalorieRing } from '../components/CalorieRing'
 import { DayPlan } from '../components/DayPlan'
+import { ManualMealForm } from '../components/ManualMealForm'
 import { Button } from '../components/ui/Button'
 import { Card } from '../components/ui/Card'
-import { Input } from '../components/ui/Input'
 import { PageHeader } from '../components/ui/PageHeader'
 import { Spinner } from '../components/ui/Spinner'
 import { getWeekForDay, getWeekPlan } from '../data/mealPlan'
 import { formatDateDE, PHASE_LABELS } from '../data/nutrition'
-import { useDayPreferenceActions, useDaySummary, useMealActions } from '../hooks/useNutrition'
+import {
+  useDayPreferenceActions,
+  useDaySummary,
+  useMealActions,
+  useSettings,
+} from '../hooks/useNutrition'
 
 interface TodayPageProps {
   onGoShopping?: () => void
@@ -16,12 +21,10 @@ interface TodayPageProps {
 
 export function TodayPage({ onGoShopping }: TodayPageProps) {
   const summary = useDaySummary()
+  const settings = useSettings()
   const { log, logManual, remove } = useMealActions()
   const { setSkipBreakfast, setMealOverride } = useDayPreferenceActions()
   const [showManual, setShowManual] = useState(false)
-  const [manualName, setManualName] = useState('')
-  const [manualKcal, setManualKcal] = useState('')
-  const [manualProtein, setManualProtein] = useState('')
 
   if (!summary) return <Spinner />
 
@@ -59,19 +62,6 @@ export function TodayPage({ onGoShopping }: TodayPageProps) {
 
   const week = getWeekForDay(summary.dayNumber || 1)
   const weekPlan = getWeekPlan(week)
-
-  const handleManualSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-    const calories = parseInt(manualKcal, 10)
-    const protein = parseInt(manualProtein, 10) || 0
-    if (!manualName || isNaN(calories)) return
-
-    await logManual({ name: manualName, calories, protein, fat: 0, carbs: 0 })
-    setManualName('')
-    setManualKcal('')
-    setManualProtein('')
-    setShowManual(false)
-  }
 
   return (
     <div className="space-y-6">
@@ -176,30 +166,13 @@ export function TodayPage({ onGoShopping }: TodayPageProps) {
           {showManual ? 'Manuell schließen' : '+ Manuell eintragen'}
         </Button>
         {showManual && (
-          <form onSubmit={handleManualSubmit} className="mt-3 space-y-3">
-            <Input
-              placeholder="Was hast du gegessen?"
-              value={manualName}
-              onChange={(e) => setManualName(e.target.value)}
-            />
-            <div className="flex gap-2">
-              <Input
-                type="number"
-                placeholder="kcal"
-                value={manualKcal}
-                onChange={(e) => setManualKcal(e.target.value)}
-              />
-              <Input
-                type="number"
-                placeholder="Protein (g)"
-                value={manualProtein}
-                onChange={(e) => setManualProtein(e.target.value)}
-              />
-            </div>
-            <Button type="submit" fullWidth>
-              Eintragen
-            </Button>
-          </form>
+          <ManualMealForm
+            nutritionApiKey={settings?.nutritionApiKey}
+            onSubmit={async (data) => {
+              await logManual(data)
+            }}
+            onClose={() => setShowManual(false)}
+          />
         )}
       </section>
     </div>
