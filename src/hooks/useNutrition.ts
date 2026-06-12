@@ -46,8 +46,12 @@ export function useSettings(): Settings | null | undefined {
   }, [])
 }
 
-export function useDayPreference(date: string = formatDateKey()): DayPreference | undefined | null {
-  return useLiveQuery(() => db.dayPreferences.where('date').equals(date).first(), [date])
+/** undefined = loading, null = no preference for this date */
+export function useDayPreference(date: string = formatDateKey()): DayPreference | null | undefined {
+  return useLiveQuery(async () => {
+    await db.open()
+    return (await db.dayPreferences.where('date').equals(date).first()) ?? null
+  }, [date])
 }
 
 export function useDaySummary(date: string = formatDateKey()): DaySummary | undefined {

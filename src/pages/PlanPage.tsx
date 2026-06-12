@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { getMealById, CATEGORY_LABELS } from '../data/meals'
-import { weekPlans } from '../data/mealPlan'
+import { resolveDayPlan, weekPlans } from '../data/mealPlan'
 import { PHASE_LABELS, getDailyTarget } from '../data/nutrition'
 import { useHistorySummaries, useSettings } from '../hooks/useNutrition'
 import { Button } from '../components/ui/Button'
@@ -25,6 +25,7 @@ export function PlanPage({ onGoShopping }: PlanPageProps) {
 
   if (!settings) return null
 
+  const skipBreakfast = settings.skipBreakfastDefault ?? false
   const completedDates = new Set(summaries.filter((s) => s.goalReached).map((s) => s.dayNumber))
 
   return (
@@ -33,6 +34,13 @@ export function PlanPage({ onGoShopping }: PlanPageProps) {
         title="45-Tage-Plan"
         subtitle="7 Wochen — je Woche ein Einkauf"
       />
+
+      {skipBreakfast && (
+        <Card className="!p-3 text-sm text-text-muted">
+          Anzeige <strong className="text-text">ohne Frühstück</strong> (Profil-Einstellung). Mittag &
+          Abend sind kräftiger.
+        </Card>
+      )}
 
       <div className="space-y-3">
         {weekPlans.map((week) => {
@@ -85,6 +93,7 @@ export function PlanPage({ onGoShopping }: PlanPageProps) {
 
                   <div className="mt-3 space-y-2">
                     {week.dayPlans.map((day) => {
+                      const resolvedDay = resolveDayPlan(day, { skipBreakfast })
                       const target = getDailyTarget(day.day, settings.startWeight)
                       const isComplete = completedDates.has(day.day)
                       const isDayExpanded = expandedDay === day.day
@@ -118,7 +127,7 @@ export function PlanPage({ onGoShopping }: PlanPageProps) {
                             <div className="px-3 pb-3 space-y-1 border-t border-border/30 pt-2">
                               {(['fruehstueck', 'mittag', 'abend', 'snack', 'getraenk'] as const).map(
                                 (cat) => {
-                                  const mealIds = day.slots[cat] ?? []
+                                  const mealIds = resolvedDay.slots[cat] ?? []
                                   return (
                                     <div key={cat} className="text-xs">
                                       <span className="text-text-muted">{CATEGORY_LABELS[cat]}: </span>
