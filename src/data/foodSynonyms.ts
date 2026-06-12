@@ -28,6 +28,9 @@ export const FOOD_SEARCH_HINTS: Record<string, string> = {
   butterbrot: 'bread with butter',
   wurstsemmel: 'sausage sandwich',
   leberkassemmel: 'leberkase sandwich',
+  fleckerl: 'schinkenfleckerl austrian ham egg noodles',
+  fleckerlspeis: 'schinkenfleckerl austrian ham egg noodles',
+  schinkenfleckerl: 'schinkenfleckerl austrian ham egg noodles',
   kroketten: 'potato croquettes',
   reis: 'cooked rice',
   salat: 'side salad',
@@ -47,6 +50,7 @@ export const FOOD_SYNONYM_GROUPS: string[][] = [
   ['doner', 'doener', 'kebap', 'kebab', 'durum', 'dürüm'],
   ['schnitzel', 'wiener'],
   ['gulasch', 'goulash'],
+  ['fleckerl', 'fleckerlspeis', 'schinkenfleckerl'],
 ]
 
 export function expandQueryTokens(tokens: string[]): string[] {

@@ -124,6 +124,20 @@ export const COMMON_DISHES: CommonDish[] = [
     fat: 6,
     carbs: 42,
   }),
+  d('Schinkenfleckerl', 'main', 450, 20, [
+    'schinkenfleckerl',
+    'schinken fleckerl',
+    'fleckerlspeis',
+    'fleckerl speis',
+    'fleckerl',
+    'fleckerln',
+  ], {
+    fat: 16,
+    carbs: 52,
+    servingNote: '1 Portion',
+    searchHint: 'schinkenfleckerl austrian ham egg noodles',
+    allergens: ['gluten', 'eggs'],
+  }),
   d('Krautfleckerl', 'main', 380, 12, ['krautfleckerl', 'krautflecker'], {
     fat: 14,
     carbs: 48,
